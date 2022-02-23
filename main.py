@@ -4,9 +4,9 @@ import os.path
 
 try:
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", required=True, help="path to input video")
+    ap.add_argument("-p", "--path", required=True, help="path to input video")
     args = vars(ap.parse_args())
-    path_to_file = args["image"]
+    path_to_file = args["path"]
 
     if not os.path.exists(path_to_file):
         raise FileNotFoundError("File not found")
