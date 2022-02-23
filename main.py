@@ -35,9 +35,6 @@ try:
             text = str(number_frame)
             text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
 
-            text_x = (out_frame.shape[1] - text_size[0]) // 2
-            text_y = (out_frame.shape[0] + text_size[1]) // 2
-
             cv2.putText(out_frame, text, (0, text_size[1]), font, font_scale, (0, 0, 255), thickness)
 
             out.write(out_frame)
