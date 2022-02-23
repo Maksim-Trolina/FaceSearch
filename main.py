@@ -1,42 +1,51 @@
 import cv2
 import argparse
+import os.path
 
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required=True, help="path to input video")
-args = vars(ap.parse_args())
+try:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-i", "--image", required=True, help="path to input video")
+    args = vars(ap.parse_args())
+    path_to_file = args["image"]
 
-cap = cv2.VideoCapture(args["image"])
-fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
-cap_fps = cap.get(cv2.CAP_PROP_FPS)
+    if not os.path.exists(path_to_file):
+        raise FileNotFoundError("File not found")
 
-cap_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 2
-cap_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 2
+    cap = cv2.VideoCapture(path_to_file)
+    fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
+    cap_fps = cap.get(cv2.CAP_PROP_FPS)
 
-out = cv2.VideoWriter(r'output.mp4', fourcc, cap_fps, (cap_width, cap_height), 0)
+    cap_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 2
+    cap_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 2
 
-number_frame = 0
-font_scale = 0.5
-thickness = 1
-font = cv2.FONT_HERSHEY_SIMPLEX
+    out = cv2.VideoWriter(r'output.mp4', fourcc, cap_fps, (cap_width, cap_height), 0)
 
-while True:
-    ret, frame = cap.read()
-    if ret:
-        out_frame = cv2.resize(frame, (cap_width, cap_height))
-        out_frame = cv2.cvtColor(out_frame, cv2.COLOR_BGR2GRAY)
+    number_frame = 0
+    font_scale = 0.5
+    thickness = 1
+    font = cv2.FONT_HERSHEY_SIMPLEX
 
-        number_frame += 1
-        text = str(number_frame)
-        text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            out_frame = cv2.resize(frame, (cap_width, cap_height))
+            out_frame = cv2.cvtColor(out_frame, cv2.COLOR_BGR2GRAY)
 
-        text_x = (out_frame.shape[1] - text_size[0]) // 2
-        text_y = (out_frame.shape[0] + text_size[1]) // 2
+            number_frame += 1
+            text = str(number_frame)
+            text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
 
-        cv2.putText(out_frame, text, (0, text_size[1]), font, font_scale, (0, 0, 255), thickness)
+            text_x = (out_frame.shape[1] - text_size[0]) // 2
+            text_y = (out_frame.shape[0] + text_size[1]) // 2
 
-        out.write(out_frame)
-    else:
-        break
+            cv2.putText(out_frame, text, (0, text_size[1]), font, font_scale, (0, 0, 255), thickness)
 
-cap.release()
-out.release()
+            out.write(out_frame)
+        else:
+            break
+
+    cap.release()
+    out.release()
+    print("A video file named output.mp4 has been created")
+except Exception as e:
+    print(e)
