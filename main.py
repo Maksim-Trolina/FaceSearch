@@ -39,7 +39,7 @@ def main():
             frame_gray = cv2.cvtColor(crop_frame, cv2.COLOR_BGR2GRAY)
 
             if not frame_equal(old_gray, frame_gray):
-                old_gray = frame_gray
+                old_gray = frame_gray.copy()
                 continue
             p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
 
